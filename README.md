@@ -35,8 +35,6 @@ Exemplo de *tabela do banco de dados*:
 
 <transação, “id da tupla”, ”coluna”, “valor antigo”, “valor novo”>.
 
----
-
 ### **Exemplo:**
 Arquivo de Log: 
 ```
