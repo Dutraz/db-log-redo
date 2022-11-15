@@ -28,7 +28,7 @@ def getMetadados():
         data = json.load(f)['INITIAL']
         f.close()
     except:
-        print('Erro ao abrir arquivo de metadados.')
+        print('Erro ao ler arquivo de metadados.')
         exit()
     return list(zip(data['A'], data['B']))
 
