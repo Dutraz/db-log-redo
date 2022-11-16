@@ -12,7 +12,7 @@ Acadêmico: **Pedro Zawadzki Dutra**
 ---
 
 
-## **Implementando o Mecanismo de Log Redo com Checkpoint**
+## 💾 **Implementando o Mecanismo de Log Redo com Checkpoint**
 
 ### **Funcionamento**
 O código deverá ser capaz de ler o arquivo de log (entradaLog) e o arquivo de Metadado e validar as informações no banco de dados através do modelo REDO. 
@@ -63,7 +63,7 @@ pip install file_read_backwards
 ---
 
 
-### **Exemplo:**
+## 📋 **Descrição:**
 
 Dado um *Arquivo de Metadados (json)*, como:
 ```javascript
