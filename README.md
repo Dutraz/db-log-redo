@@ -45,7 +45,7 @@ Feito a instalação das dependências do projeto, é necessário obter uma cóp
 Para isso, rode:
 
 ```
-git clone --recurse-submodules https://github.com/Dutraz/db-log-redo && cd cu-uffs
+git clone --recurse-submodules https://github.com/Dutraz/db-log-redo && cd db-log-redo
 ```
 
 #### **2.1 Python**
