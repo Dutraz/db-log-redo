@@ -1,19 +1,47 @@
-### Univeridade Federal da Fronteira Sul - Campus Chapecó
-### Ciência da Computação - Banco de Dados II – 2022.2
-### Prof. Guilherme Dal Bianco
-### Acadêmico: **Pedro Zawadzki Dutra**
+# **LOG REDO**
+
+Univeridade Federal da Fronteira Sul - Campus Chapecó
+
+Ciência da Computação - Banco de Dados II – 2022.2
+
+Prof. Guilherme Dal Bianco
+
+Acadêmico: **Pedro Zawadzki Dutra**
+
 
 ---
 
-## Trabalho Prático - LOG
 
-### **Objetivo**: 
-Implementar o mecanismo de log Redo/Undo com checkpoint usando o SGBD.
+## **Implementando o Mecanismo de Log Redo com Checkpoint**
 
-### **Funcionamento**: 
-O código, que poderá utilizar qualquer linguagem de programação, deverá ser capaz de ler o arquivo de log (entradaLog) e o arquivo de Metadado e validar as informações no banco de dados através do modelo REDO/UNDO. 
+### **Funcionamento**
+O código deverá ser capaz de ler o arquivo de log (entradaLog) e o arquivo de Metadado e validar as informações no banco de dados através do modelo REDO. 
 O código receberá como entrada o arquivo de metadados (dados salvos) e os dados da tabela que irá operar no banco de dados.
 
+
+---
+
+
+## 🚀 Começando
+
+### **1. Dependências**
+Para executar o projeto você vai precisar:
+- [Python 3.x](https://www.python.org/downloads/)
+- [Postgres 14.x](https://www.postgresql.org/download/)
+
+### **2. Configuração**
+
+Feito a instalação das dependências, é necessário obter uma cópia do projeto.
+
+Para isso, rode:
+
+git clone --recurse-submodules https://github.com/Dutraz/db-log-redo && cd cu-uffs
+Isso criará e trocará para a pasta cu-uffs com o código do projeto.
+
+---
+
+
+### **Exemplo:**
 Exemplo de *tabela do banco de dados*:
 |  ID  |  A  |  B  |
 |------|-----|-----|
@@ -35,8 +63,6 @@ Exemplo de *tabela do banco de dados*:
 
 <transação, “id da tupla”, ”coluna”, “valor antigo”, “valor novo”>.
 
-### **Exemplo:**
-Arquivo de Log: 
 ```
 <start T1>
 <T1,1, A,20,500>
@@ -76,5 +102,5 @@ Funções a serem implementadas:
 3. Verifique quais transações devem realizar REDO/UNDO. Imprimir o nome das transações que irão sofrer Redo. Observem a questão do checkpoint;
 4. Checar quais valores estão salvos nas tabelas (com o select) e atualizar valores inconsistentes (update);
 5. Reportar quais dados foram atualizados;
-6. Seguir o fluxo de execução conforme o método de REDO, conforme visto em aula; 
+6. Seguir o fluxo de execução conforme o método de REDO, conforme visto em aula;
     
