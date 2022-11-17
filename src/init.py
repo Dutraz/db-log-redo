@@ -1,23 +1,5 @@
 import json
-from db import exec
-
-
-def createTable():
-    exec('''
-        CREATE TABLE log (
-            id SERIAL PRIMARY KEY,
-            a integer NOT NULL,
-            b integer NOT NULL
-        )
-        ''')
-
-
-def dropTable():
-    exec('DROP TABLE log')
-
-
-def insert(a, b):
-    exec(f'INSERT INTO log (a, b) VALUES ({a}, {b})')
+import db
 
 
 # Lê o arquivo que contém os valores iniciais do banco
@@ -37,12 +19,12 @@ def getMetadados():
 def populateTable():
     data = getMetadados()
     for d in data:
-        insert(d[0], d[1])
+        db.insert(None, d[0], d[1])
 
 
 def init():
-    dropTable()
-    createTable()
+    db.dropTable()
+    db.createTable()
     populateTable()
 
 

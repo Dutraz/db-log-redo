@@ -1,32 +1,33 @@
 import re
-import json
-from db import exec
-from init import init
+import db
 from file_read_backwards import FileReadBackwards
 
 
 def getLog():
-    # Transações e uma lista suas respectivas alterações
-    log = dict()
+    # Lista com as alterações inconsistentes
+    log = list()
     # Flag indicando se já foi feito checkpoint
     ckpt = False
     # Lista com todos as transações não salvas pelos checkpoints
     redo = set()
+    # Lista com as transações abertas
+    opened = set()
 
     try:
         with FileReadBackwards('../files/entradaLog', encoding='utf-8') as file:
             for line in file:
+                # Remove as quebras de linha da string
                 line = re.sub('\n|\r', '', line).strip()
 
                 # COMMIT
                 if (re.match('^<commit .+>', line)):
                     transaction = re.sub('<commit|>', '', line).strip()
 
-                    # Add transação ao log se não estiver E:
+                    # Add transação à lista do redo se:
                     # - Ainda não houve checkpoint
                     # - Não foi salva em algum checkpoint
-                    if (transaction not in log and (ckpt == False or transaction in redo)):
-                        log[transaction] = list()
+                    if (ckpt == False or transaction in redo):
+                        opened.add(transaction)
 
                 # CHECKPOINT
                 elif (re.match('^<CKPT\s*\\(.*\\)\s*>', line)):
@@ -35,30 +36,30 @@ def getLog():
                     redo = set()
                     # Atualiza a lista de transações não salvas
                     if transactions:
-                        for transaction in transactions.split(','):
-                            redo.add(transaction)
+                        redo = set(transactions.split(','))
 
                 # UPDATE
                 elif (re.match('^<.+,.+,.+,.+,.+>', line)):
                     args = re.sub('<|>| ', '', line)
                     [transaction, id, col, old, new] = args.split(',')
 
-                    # Add registro ao log da transação se foi commitada E:
-                    # - Ainda não houve checkpoint 
+                    # Add registro ao log se a transação está aberta e:
+                    # - Ainda não houve checkpoint
                     # - Não foi salva em algum checkpoint
-                    if (transaction in log and (ckpt == False or transaction in redo)):
-                        log[transaction].append({
+                    if (transaction in opened and (transaction in redo or not ckpt)):
+                        log.append({
+                            'transaction': transaction,
                             'id': id,
                             'col': col,
                             'old': old,
                             'new': new
                         })
-                
+
                 # START
                 elif (re.match('^<start .+>', line)):
                     transaction = re.sub('<start|>', '', line).strip()
                     # Se chegou ao início da transação não precisa mais buscar por ela
-                    redo.discard(transaction)
+                    opened.discard(transaction)
 
                 # UNDEFINED
                 else:
@@ -73,13 +74,45 @@ def getLog():
     except Exception as e:
         print('Erro ao ler arquivo de log. ' + str(e))
         exit()
-    
+
     return log
 
 
+def checkValue(id, col, val):
+    result = db.exec(f'SELECT {col}={val} from log WHERE id={id}')
+    # Caso a tupla não esteja na tabela, retorna None
+    if (result == []):
+        return None
+    return result[0][0]
+
+
 def redo():
-    init()
-    print(json.dumps(getLog(), indent=4, sort_keys=True))
+    # Lista de registros consistentes
+    consistants = set()
+    # Lista com transações e flag da necessidade de redo
+    transactions = dict()
+    
+    log = getLog()
+    print(log)
+
+    for change in log:
+        if (change['transaction'] not in transactions):
+            transactions[change['transaction']] = False
+
+        check = checkValue(change['id'], change['col'].lower(), change['new'])
+        if (check != True):
+            transactions[change['transaction']] = True
+            # Caso a tupla ainda não tenha sido inserida
+            if (check == None):
+                if (change['col'] == 'A'):
+                    db.insert(change['id'], change['new'], 'NULL')
+                else:
+                    db.insert(change['id'], 'NULL', change['new'])
+            # Caso o valor esteja inconsistente
+            elif (check == False):
+                db.update(change['id'], change['col'].lower(), change['new'])
+    
+    return transactions
 
 
 if __name__ == '__main__':
