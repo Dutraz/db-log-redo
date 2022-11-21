@@ -38,7 +38,7 @@ def createTable():
 
 
 def dropTable():
-    exec('DROP TABLE log')
+    exec('DROP TABLE IF EXISTS log')
 
 
 def insert(id, a, b):
@@ -47,5 +47,10 @@ def insert(id, a, b):
     else:
         exec(f'INSERT INTO log VALUES ({id}, {a}, {b})')
 
+
 def update(id, col, val):
     exec(f'UPDATE log set {col}={val} WHERE id={id}')
+
+
+def selectAll():
+    return exec('SELECT a, b FROM log ORDER BY id')

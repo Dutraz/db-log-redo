@@ -15,7 +15,7 @@ Acadêmico: **Pedro Zawadzki Dutra**
 ## 💾 **Implementando o Mecanismo de Log Redo com Checkpoint**
 
 ### **Funcionamento**
-O código deverá ser capaz de ler o arquivo de log (entradaLog) e o arquivo de Metadado e validar as informações no banco de dados através do modelo REDO. 
+O algoritmo deverá ser capaz de ler o arquivo de log (entradaLog) e o arquivo de Metadado e validar as informações no banco de dados através do modelo REDO. 
 O código receberá como entrada o arquivo de metadados (dados salvos) e os dados da tabela que irá operar no banco de dados.
 
 ### **Detalhes**:
@@ -44,7 +44,7 @@ Feito a instalação das dependências do projeto, é necessário obter uma cóp
 
 Para isso, rode:
 
-```
+``` powershell
 git clone --recurse-submodules https://github.com/Dutraz/db-log-redo && cd db-log-redo
 ```
 
@@ -53,11 +53,34 @@ git clone --recurse-submodules https://github.com/Dutraz/db-log-redo && cd db-lo
 Serão necessárias algumas bibliotecas para que o projeto rode corretamente.
 Para instalá-las, rode:
 
-```
+``` powershell
 pip install psycopg2
 ```
-```
+``` powershell
 pip install file_read_backwards
+```
+
+#### **2.2 Banco de Dados**
+
+O projeto demanda de uma base de dados. Para criá-la, insira o comando em seu gerenciador de banco de dados:
+
+``` SQL
+CREATE DATABASE logredo;
+```
+
+---
+
+
+## 📋 **Testando:**
+
+Entre na pasta src com o comando:
+``` powershell
+cd src
+```
+
+E então, execute o projeto com:
+``` powershell
+python main.py
 ```
 
 ---

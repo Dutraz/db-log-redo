@@ -1,5 +1,7 @@
 import re
 import db
+import files
+from print import printJson
 from file_read_backwards import FileReadBackwards
 
 
@@ -91,15 +93,18 @@ def redo():
     consistants = set()
     # Lista com transações e flag da necessidade de redo
     transactions = dict()
-    
+    # Processa o arquivo de log buscando por alterações sem checkpoint
     log = getLog()
-    print(log)
 
     for change in log:
+        # Inicializa a flag de alteração
         if (change['transaction'] not in transactions):
             transactions[change['transaction']] = False
 
+        # Verifica a integridade do valor no banco de dados
         check = checkValue(change['id'], change['col'].lower(), change['new'])
+
+        # Se há inconsistência com o valor do banco, ajusta
         if (check != True):
             transactions[change['transaction']] = True
             # Caso a tupla ainda não tenha sido inserida
@@ -108,10 +113,10 @@ def redo():
                     db.insert(change['id'], change['new'], 'NULL')
                 else:
                     db.insert(change['id'], 'NULL', change['new'])
-            # Caso o valor esteja inconsistente
+            # Caso o valor da tupla esteja inconsistente
             elif (check == False):
                 db.update(change['id'], change['col'].lower(), change['new'])
-    
+
     return transactions
 
 
