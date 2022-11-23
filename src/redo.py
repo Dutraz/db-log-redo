@@ -89,14 +89,10 @@ def checkValue(id, col, val):
 
 
 def redo():
-    # Lista de registros consistentes
-    consistants = set()
     # Lista com transações e flag da necessidade de redo
     transactions = dict()
-    # Processa o arquivo de log buscando por alterações sem checkpoint
-    log = getLog()
 
-    for change in log:
+    for change in getLog():
         # Inicializa a flag de alteração
         if (change['transaction'] not in transactions):
             transactions[change['transaction']] = False
@@ -109,10 +105,7 @@ def redo():
             transactions[change['transaction']] = True
             # Caso a tupla ainda não tenha sido inserida
             if (check == None):
-                if (change['col'] == 'A'):
-                    db.insert(change['id'], change['new'], 'NULL')
-                else:
-                    db.insert(change['id'], 'NULL', change['new'])
+                db.insert(change['id'], *[change['new'], 'NULL']['::1' if change['col'] == 'A' else '::-1'])
             # Caso o valor da tupla esteja inconsistente
             elif (check == False):
                 db.update(change['id'], change['col'].lower(), change['new'])
