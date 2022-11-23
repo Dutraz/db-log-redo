@@ -9,5 +9,9 @@ def printJson(json, ident=0):
         if (isinstance(value, dict)):
             printJson(value, ident+1)
         else:
-            print(value)
-    printIdented('}', ident)
+            print(value, end='')
+        
+        last = list(json)[-1] != key
+        print(',' if last else '')
+
+    printIdented('}', ident, '')
